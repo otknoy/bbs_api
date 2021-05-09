@@ -1,0 +1,143 @@
+openapi: "3.0.0"
+info:
+  version: 0.0.1
+  title: BBS API
+  license:
+    name: MIT License
+    url: https://choosealicense.com/licenses/mit/
+servers:
+  - url: http://localhost:8080
+
+paths:
+  /boardList:
+    get:
+      description: Get board list
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  last_updated:
+                    type: string
+                    format: date
+                  board_list:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        server:
+                          type: string
+                        board_id:
+                          type: string
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /{server}/{board_id}/threadList:
+    get:
+      description: Get thread list
+      parameters:
+        - name: server
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: board_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  thread_list:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /{server}/{board_id}/thread/{thread_id}:
+    get:
+      description: Get thread
+      parameters:
+          - name: server
+            in: path
+            required: true
+            schema:
+              type: string
+          - name: board_id
+            in: path
+            required: true
+            schema:
+              type: string
+          - name: thread_id
+            in: path
+            required: true
+            schema:
+              type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  comment_list:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        meta:
+                          type: object
+                          properties:
+                            number: 
+                              type: integer
+                            name:
+                              type: string
+                            posted_at:
+                              type: string
+                              format: date-time
+                            user_id:
+                              type: string
+                        comment:
+                          type: string
+                      
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'      
+
+components:
+  schemas:
+    Error:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
