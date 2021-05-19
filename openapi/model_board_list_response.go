@@ -9,10 +9,8 @@
 
 package openapi
 
-//Response return a ImplResponse struct filled
-func Response(code int, body interface{}) ImplResponse {
-	return ImplResponse{
-		Code: code,
-		Body: body,
-	}
+type BoardListResponse struct {
+	LastUpdated string `json:"last_updated,omitempty"`
+
+	BoardList []BoardListResponseBoardList `json:"board_list,omitempty"`
 }
