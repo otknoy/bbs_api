@@ -14,23 +14,20 @@ import (
 	"net/http"
 )
 
-
-
 // DefaultApiRouter defines the required methods for binding the api requests to a responses for the DefaultApi
-// The DefaultApiRouter implementation should parse necessary information from the http request, 
+// The DefaultApiRouter implementation should parse necessary information from the http request,
 // pass the data to a DefaultApiServicer to perform the required actions, then write the service results to the http response.
-type DefaultApiRouter interface { 
+type DefaultApiRouter interface {
 	BoardListGet(http.ResponseWriter, *http.Request)
 	ServerBoardIdThreadListGet(http.ResponseWriter, *http.Request)
 	ServerBoardIdThreadThreadIdGet(http.ResponseWriter, *http.Request)
 }
 
-
 // DefaultApiServicer defines the api actions for the DefaultApi service
-// This interface intended to stay up to date with the openapi yaml used to generate it, 
-// while the service implementation can ignored with the .openapi-generator-ignore file 
+// This interface intended to stay up to date with the openapi yaml used to generate it,
+// while the service implementation can ignored with the .openapi-generator-ignore file
 // and updated with the logic required for the API.
-type DefaultApiServicer interface { 
+type DefaultApiServicer interface {
 	BoardListGet(context.Context) (ImplResponse, error)
 	ServerBoardIdThreadListGet(context.Context, string, string) (ImplResponse, error)
 	ServerBoardIdThreadThreadIdGet(context.Context, string, string, string) (ImplResponse, error)

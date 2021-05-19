@@ -9,10 +9,8 @@
 
 package openapi
 
-//Response return a ImplResponse struct filled
-func Response(code int, body interface{}) ImplResponse {
-	return ImplResponse{
-		Code: code,
-		Body: body,
-	}
+type ThreadListResponseThreadList struct {
+	Id string `json:"id,omitempty"`
+
+	Name string `json:"name,omitempty"`
 }

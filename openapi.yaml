@@ -18,21 +18,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  last_updated:
-                    type: string
-                    format: date
-                  board_list:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        name:
-                          type: string
-                        server:
-                          type: string
-                        board_id:
-                          type: string
+                $ref: '#/components/schemas/BoardListResponse'
         500:
           description: Internal Server Error
           content:
@@ -60,16 +46,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  thread_list:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: string
-                        name:
-                          type: string
+                $ref: '#/components/schemas/ThreadListResponse'
         500:
           description: Internal Server Error
           content:
@@ -102,27 +79,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  comment_list:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        meta:
-                          type: object
-                          properties:
-                            number: 
-                              type: integer
-                            name:
-                              type: string
-                            posted_at:
-                              type: string
-                              format: date-time
-                            user_id:
-                              type: string
-                        comment:
-                          type: string
-                      
+                $ref: '#/components/schemas/ThreadResponse'
         500:
           description: Internal Server Error
           content:
@@ -132,6 +89,54 @@ paths:
 
 components:
   schemas:
+    BoardListResponse:
+      properties:
+        last_updated:
+          type: string
+          format: date
+        board_list:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              server:
+                type: string
+              board_id:
+                type: string
+    ThreadListResponse:
+      properties:
+        thread_list:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+    ThreadResponse:
+      properties:
+        comment_list:
+          type: array
+          items:
+            type: object
+            properties:
+              meta:
+                type: object
+                properties:
+                  number:
+                    type: integer
+                  name:
+                    type: string
+                  posted_at:
+                    type: string
+                    format: date-time
+                  user_id:
+                    type: string
+                  comment:
+                    type: string
     Error:
       required:
         - code
