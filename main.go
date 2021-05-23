@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bbs_api/infra"
 	"bbs_api/openapi"
+	"bbs_api/service"
 	"log"
 	"net/http"
 )
@@ -9,8 +11,10 @@ import (
 func main() {
 	log.Printf("Server started")
 
-	DefaultApiService := openapi.NewDefaultApiService()
-	DefaultApiController := openapi.NewDefaultApiController(DefaultApiService)
+	svc := service.NewBbsService(
+		infra.NewBoardListRepository("http://menu.5ch.net"),
+	)
+	DefaultApiController := openapi.NewDefaultApiController(svc)
 
 	router := openapi.NewRouter(DefaultApiController)
 

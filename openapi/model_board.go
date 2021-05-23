@@ -9,8 +9,10 @@
 
 package openapi
 
-type BoardListResponse struct {
-	LastUpdated string `json:"last_updated,omitempty"`
+type Board struct {
+	Name string `json:"name,omitempty"`
 
-	BoardGroups []BoardGroup `json:"board_groups,omitempty"`
+	ServerId string `json:"server_id,omitempty"`
+
+	BoardId string `json:"board_id,omitempty"`
 }
