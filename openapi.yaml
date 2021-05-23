@@ -94,17 +94,26 @@ components:
         last_updated:
           type: string
           format: date
+        board_groups:
+          type: array
+          items:
+            $ref: "#/components/schemas/BoardGroup"
+    BoardGroup:
+      properties:
+        name:
+          type: string
         board_list:
           type: array
           items:
-            type: object
-            properties:
-              name:
-                type: string
-              server:
-                type: string
-              board_id:
-                type: string
+            $ref: "#/components/schemas/Board"
+    Board:
+      properties:
+        name:
+          type: string
+        server:
+          type: string
+        board_id:
+          type: string
     ThreadListResponse:
       properties:
         thread_list:
