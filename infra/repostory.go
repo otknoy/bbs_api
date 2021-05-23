@@ -21,7 +21,7 @@ type boardListRepository struct {
 }
 
 func (r *boardListRepository) GetBoardGroups() boardlist.BoardGroups {
-	doc, _ := NewShiftJISDocument(r.host + "/bbsmenu.html")
+	doc, _ := newShiftJISDocument(r.host + "/bbsmenu.html")
 
 	m := make(map[string]boardlist.BoardList)
 	l := make([]string, 0)
