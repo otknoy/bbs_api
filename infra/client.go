@@ -9,7 +9,7 @@ import (
 	"golang.org/x/text/transform"
 )
 
-func NewShiftJISDocument(url string) (*goquery.Document, error) {
+func newShiftJISDocument(url string) (*goquery.Document, error) {
 	res, err := http.Get(url)
 	if err != nil {
 		return nil, err
