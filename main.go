@@ -2,6 +2,7 @@ package main
 
 import (
 	"bbs_api/openapi"
+	"bbs_api/service"
 	"log"
 	"net/http"
 )
@@ -9,8 +10,8 @@ import (
 func main() {
 	log.Printf("Server started")
 
-	DefaultApiService := openapi.NewDefaultApiService()
-	DefaultApiController := openapi.NewDefaultApiController(DefaultApiService)
+	svc := service.NewBbsService()
+	DefaultApiController := openapi.NewDefaultApiController(svc)
 
 	router := openapi.NewRouter(DefaultApiController)
 
