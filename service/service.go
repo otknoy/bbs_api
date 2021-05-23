@@ -25,9 +25,9 @@ func (s *bbsService) BoardListGet(ctx context.Context) (openapi.ImplResponse, er
 		bl := make([]openapi.Board, len(bg.BoardList))
 		for j, b := range bg.BoardList {
 			bl[j] = openapi.Board{
-				Name:    b.Name,
-				Server:  string(b.ServerId),
-				BoardId: string(b.BoardId),
+				Name:     b.Name,
+				ServerId: string(b.ServerId),
+				BoardId:  string(b.BoardId),
 			}
 		}
 

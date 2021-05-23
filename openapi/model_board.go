@@ -12,7 +12,7 @@ package openapi
 type Board struct {
 	Name string `json:"name,omitempty"`
 
-	Server string `json:"server,omitempty"`
+	ServerId string `json:"server_id,omitempty"`
 
 	BoardId string `json:"board_id,omitempty"`
 }

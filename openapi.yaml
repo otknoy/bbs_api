@@ -110,7 +110,7 @@ components:
       properties:
         name:
           type: string
-        server:
+        server_id:
           type: string
         board_id:
           type: string
