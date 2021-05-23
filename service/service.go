@@ -1,24 +1,23 @@
 package service
 
 import (
-	"bbs_api/infra"
+	"bbs_api/domain/boardlist"
 	"bbs_api/openapi"
 	"context"
 	"errors"
 	"net/http"
 )
 
-func NewBbsService() openapi.DefaultApiServicer {
-	return &bbsService{}
+func NewBbsService(blRepo boardlist.BoardListRepository) openapi.DefaultApiServicer {
+	return &bbsService{blRepo}
 }
 
 type bbsService struct {
+	boardListRepository boardlist.BoardListRepository
 }
 
 func (s *bbsService) BoardListGet(ctx context.Context) (openapi.ImplResponse, error) {
-	svc := infra.NewBoardListRepository("http://menu.5ch.net")
-
-	boardGroups := svc.GetBoardGroups()
+	boardGroups := s.boardListRepository.GetBoardGroups()
 
 	bgs := make([]openapi.BoardGroup, len(boardGroups))
 	for i, bg := range boardGroups {
