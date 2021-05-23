@@ -16,7 +16,7 @@ type bbsService struct {
 }
 
 func (s *bbsService) BoardListGet(ctx context.Context) (openapi.ImplResponse, error) {
-	svc := infra.NewBoardLisBoardListRepository("http://menu.5ch.net")
+	svc := infra.NewBoardListRepository("http://menu.5ch.net")
 
 	boardGroups := svc.GetBoardGroups()
 

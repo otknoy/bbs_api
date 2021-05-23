@@ -12,7 +12,7 @@ import (
 type BoardListRepository struct {
 }
 
-func NewBoardLisBoardListRepository(host string) boardlist.BoardListRepository {
+func NewBoardListRepository(host string) boardlist.BoardListRepository {
 	return &boardListRepository{host}
 }
 
