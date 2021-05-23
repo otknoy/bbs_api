@@ -19,7 +19,7 @@ func TestBoardRepository_GetBoardGroups(t *testing.T) {
 	s := NewStubServer(t, html)
 	defer s.Close()
 
-	r := infra.NewBoardLisBoardListRepository(s.URL)
+	r := infra.NewBoardListRepository(s.URL)
 
 	got := r.GetBoardGroups()
 
@@ -64,7 +64,7 @@ func TestBoardRepository_GetBoardGroups_number_of_boards(t *testing.T) {
 	s := NewStubServer(t, html)
 	defer s.Close()
 
-	r := infra.NewBoardLisBoardListRepository(s.URL)
+	r := infra.NewBoardListRepository(s.URL)
 
 	got := r.GetBoardGroups()
 
