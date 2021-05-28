@@ -9,6 +9,7 @@ RUN go mod download
 COPY openapi/ openapi/
 COPY service/ service/
 COPY infra/ infra/
+COPY domain/ domain
 COPY main.go .
 RUN CGO_ENABLED=0 go build -o bbs-api
 
