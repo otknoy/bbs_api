@@ -2,6 +2,7 @@ package service
 
 import (
 	"bbs_api/domain/boardlist"
+	"bbs_api/domain/threadlist"
 	"bbs_api/openapi"
 	"context"
 	"errors"
@@ -46,7 +47,32 @@ func (s *bbsService) BoardListGet(ctx context.Context) (openapi.ImplResponse, er
 }
 
 func (s *bbsService) ServerBoardIdThreadListGet(ctx context.Context, server string, boardId string) (openapi.ImplResponse, error) {
-	return openapi.Response(http.StatusNotImplemented, nil), errors.New("ServerBoardIdThreadListGet method not implemented")
+	threadList := threadlist.ThreadList{
+		threadlist.Thread{
+			ThreadId: "dummy ID 1",
+			Name:     "dummy name 1",
+		},
+		threadlist.Thread{
+			ThreadId: "dummy ID 2",
+			Name:     "dummy name 2",
+		},
+	}
+
+	return openapi.Response(
+		http.StatusOK,
+		openapi.ThreadListResponse{
+			ThreadList: func(l threadlist.ThreadList) []openapi.ThreadListResponseThreadList {
+				res := make([]openapi.ThreadListResponseThreadList, len(l))
+				for i, t := range threadList {
+					res[i] = openapi.ThreadListResponseThreadList{
+						Id:   string(t.ThreadId),
+						Name: t.Name,
+					}
+				}
+				return res
+			}(threadList),
+		},
+	), nil
 }
 
 func (s *bbsService) ServerBoardIdThreadThreadIdGet(ctx context.Context, server string, boardId string, threadId string) (openapi.ImplResponse, error) {
