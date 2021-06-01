@@ -3,6 +3,7 @@ package infra
 import (
 	"bbs_api/domain"
 	"bbs_api/domain/boardlist"
+	"bbs_api/domain/threadlist"
 	"net/url"
 	"strings"
 
@@ -75,4 +76,24 @@ func (r *boardListRepository) GetBoardGroups() boardlist.BoardGroups {
 	}
 
 	return boardlist.BoardGroups(bgs)
+}
+
+func NewThreadListRepository() threadlist.ThreadListRepository {
+	return &threadListRepository{}
+}
+
+type threadListRepository struct {
+}
+
+func (r *threadListRepository) GetThreadList(serverId domain.ServerId, threadId domain.ThreadId) threadlist.ThreadList {
+	return threadlist.ThreadList{
+		threadlist.Thread{
+			ThreadId: "dummy ID 1",
+			Name:     "dummy name 1",
+		},
+		threadlist.Thread{
+			ThreadId: "dummy ID 2",
+			Name:     "dummy name 2",
+		},
+	}
 }
