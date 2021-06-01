@@ -1,5 +1,7 @@
 package threadlist
 
+import "bbs_api/domain"
+
 type ThreadListRepository interface {
-	GetThreadList() ThreadList
+	GetThreadList(domain.ServerId, domain.ThreadId) ThreadList
 }
