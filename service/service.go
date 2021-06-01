@@ -1,6 +1,7 @@
 package service
 
 import (
+	"bbs_api/domain"
 	"bbs_api/domain/boardlist"
 	"bbs_api/domain/threadlist"
 	"bbs_api/openapi"
@@ -9,12 +10,16 @@ import (
 	"net/http"
 )
 
-func NewBbsService(blRepo boardlist.BoardListRepository) openapi.DefaultApiServicer {
-	return &bbsService{blRepo}
+func NewBbsService(
+	blRepo boardlist.BoardListRepository,
+	thRepo threadlist.ThreadListRepository,
+) openapi.DefaultApiServicer {
+	return &bbsService{blRepo, thRepo}
 }
 
 type bbsService struct {
-	boardListRepository boardlist.BoardListRepository
+	boardListRepository  boardlist.BoardListRepository
+	threadListRepository threadlist.ThreadListRepository
 }
 
 func (s *bbsService) BoardListGet(ctx context.Context) (openapi.ImplResponse, error) {
@@ -47,16 +52,7 @@ func (s *bbsService) BoardListGet(ctx context.Context) (openapi.ImplResponse, er
 }
 
 func (s *bbsService) ServerBoardIdThreadListGet(ctx context.Context, server string, boardId string) (openapi.ImplResponse, error) {
-	threadList := threadlist.ThreadList{
-		threadlist.Thread{
-			ThreadId: "dummy ID 1",
-			Name:     "dummy name 1",
-		},
-		threadlist.Thread{
-			ThreadId: "dummy ID 2",
-			Name:     "dummy name 2",
-		},
-	}
+	threadList := s.threadListRepository.GetThreadList(domain.ServerId(server), domain.ThreadId(boardId))
 
 	return openapi.Response(
 		http.StatusOK,
