@@ -9,9 +9,6 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-type BoardListRepository struct {
-}
-
 func NewBoardListRepository(host string) boardlist.BoardListRepository {
 	return &boardListRepository{host}
 }
