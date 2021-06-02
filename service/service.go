@@ -52,7 +52,7 @@ func (s *bbsService) BoardListGet(ctx context.Context) (openapi.ImplResponse, er
 }
 
 func (s *bbsService) ServerBoardIdThreadListGet(ctx context.Context, server string, boardId string) (openapi.ImplResponse, error) {
-	threadList := s.threadListRepository.GetThreadList(domain.ServerId(server), domain.ThreadId(boardId))
+	threadList := s.threadListRepository.GetThreadList(domain.ServerId(server), domain.BoardId(boardId))
 
 	return openapi.Response(
 		http.StatusOK,

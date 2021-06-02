@@ -1,7 +1,9 @@
 package infra_test
 
 import (
+	"bbs_api/domain"
 	"bbs_api/domain/boardlist"
+	"bbs_api/domain/threadlist"
 	"bbs_api/infra"
 	_ "embed"
 	"fmt"
@@ -15,10 +17,13 @@ import (
 var (
 	//go:embed test_data/bbsmenu.html
 	boardListHtml string
+
+	//go:embed test_data/hayabusa9_news_subback.html
+	threadListHtml string
 )
 
 func TestBoardRepository_GetBoardGroups(t *testing.T) {
-	s := NewStubServer(t, boardListHtml)
+	s := NewStubServer(t, "/bbsmenu.html", boardListHtml)
 	defer s.Close()
 
 	r := infra.NewBoardListRepository(s.URL)
@@ -63,7 +68,7 @@ func TestBoardRepository_GetBoardGroups(t *testing.T) {
 }
 
 func TestBoardRepository_GetBoardGroups_number_of_boards(t *testing.T) {
-	s := NewStubServer(t, boardListHtml)
+	s := NewStubServer(t, "/bbsmenu.html", boardListHtml)
 	defer s.Close()
 
 	r := infra.NewBoardListRepository(s.URL)
@@ -98,12 +103,51 @@ func TestBoardRepository_GetBoardGroups_number_of_boards(t *testing.T) {
 	}
 }
 
-func NewStubServer(t *testing.T, response string) *httptest.Server {
+func TestThreadListRepository_GetThreadList(t *testing.T) {
+	serverId := domain.ServerId("test-serverId")
+	boardId := domain.BoardId("test-boardId")
+
+	s := NewStubServer(t, "/test-boardId/subback.html", threadListHtml)
+	defer s.Close()
+
+	r := infra.NewThreadListRepository(func(sId domain.ServerId, bId domain.BoardId) string {
+		if sId != serverId || bId != boardId {
+			t.Fatalf("invalid args of urlBuilderFunc: serverId=%s, boardId=%s", sId, bId)
+		}
+
+		return fmt.Sprintf("%s/%s/subback.html", s.URL, boardId)
+	})
+
+	got := r.GetThreadList(serverId, boardId)
+
+	if diff := cmp.Diff(
+		got[:3],
+		threadlist.ThreadList{
+			{ThreadId: "1622633270", Name: "1: 【東京五輪】竹島表記問題が過激化…駐韓日本大使館付近で旭日旗を燃やした大学生３人逮捕 (1)"},
+			{ThreadId: "1622632537", Name: "2: かっぱ寿司では (17)"},
+			{ThreadId: "1622582170", Name: "3: 「身に付ける」ドラレコ登場　首にかけて360度をくまなく録画 (594)"},
+		},
+	); diff != "" {
+		t.Errorf("differs: %v", diff)
+	}
+
+	if diff := cmp.Diff(
+		got[431:434],
+		threadlist.ThreadList{
+			{ThreadId: "9245000000", Name: "432: ★ 5ちゃんねるからのお知らせ (3)"},
+			{ThreadId: "9240200226", Name: "433: 【ご案内】新型コロナウイルスについて About COVID-19 (4)"},
+			{ThreadId: "9240180801", Name: "434: 【すすコイン】期間限定キャンペーンのお知らせ！ (37)"},
+		},
+	); diff != "" {
+		t.Errorf("differs: %v", diff)
+	}
+
+}
+
+func NewStubServer(t *testing.T, wantPath, response string) *httptest.Server {
 	t.Helper()
 
 	s := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		wantPath := "/bbsmenu.html"
-
 		if path := r.URL.Path; path != wantPath {
 			t.Fatalf("path must be %s, but %s", wantPath, path)
 		}

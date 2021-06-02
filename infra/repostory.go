@@ -78,22 +78,40 @@ func (r *boardListRepository) GetBoardGroups() boardlist.BoardGroups {
 	return boardlist.BoardGroups(bgs)
 }
 
-func NewThreadListRepository() threadlist.ThreadListRepository {
-	return &threadListRepository{}
+func NewThreadListRepository(f urlBuilderFunc) threadlist.ThreadListRepository {
+	return &threadListRepository{
+		urlBuilderFunc: f,
+	}
 }
 
 type threadListRepository struct {
+	urlBuilderFunc urlBuilderFunc
 }
 
-func (r *threadListRepository) GetThreadList(serverId domain.ServerId, threadId domain.ThreadId) threadlist.ThreadList {
-	return threadlist.ThreadList{
-		threadlist.Thread{
-			ThreadId: "dummy ID 1",
-			Name:     "dummy name 1",
-		},
-		threadlist.Thread{
-			ThreadId: "dummy ID 2",
-			Name:     "dummy name 2",
-		},
-	}
+func (r *threadListRepository) GetThreadList(serverId domain.ServerId, boardId domain.BoardId) threadlist.ThreadList {
+	url := r.urlBuilderFunc(serverId, boardId)
+	doc, _ := newShiftJISDocument(url)
+
+	threadList := make([]threadlist.Thread, 0)
+	doc.Find("div > small#trad > a").Each(func(_ int, s *goquery.Selection) {
+		href, ok := s.Attr("href")
+		if !ok {
+			return
+		}
+
+		tokens := strings.Split(href, "/")
+		if len(tokens) != 2 {
+			return
+		}
+		threadId := tokens[0]
+
+		threadList = append(threadList, threadlist.Thread{
+			ThreadId: domain.ThreadId(threadId),
+			Name:     s.Text(),
+		})
+	})
+
+	return threadlist.ThreadList(threadList)
 }
+
+type urlBuilderFunc func(domain.ServerId, domain.BoardId) (url string)
