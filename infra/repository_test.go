@@ -12,11 +12,13 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
-//go:embed test_data/bbsmenu.html
-var html string
+var (
+	//go:embed test_data/bbsmenu.html
+	boardListHtml string
+)
 
 func TestBoardRepository_GetBoardGroups(t *testing.T) {
-	s := NewStubServer(t, html)
+	s := NewStubServer(t, boardListHtml)
 	defer s.Close()
 
 	r := infra.NewBoardListRepository(s.URL)
@@ -61,7 +63,7 @@ func TestBoardRepository_GetBoardGroups(t *testing.T) {
 }
 
 func TestBoardRepository_GetBoardGroups_number_of_boards(t *testing.T) {
-	s := NewStubServer(t, html)
+	s := NewStubServer(t, boardListHtml)
 	defer s.Close()
 
 	r := infra.NewBoardListRepository(s.URL)
