@@ -91,9 +91,6 @@ components:
   schemas:
     BoardListResponse:
       properties:
-        last_updated:
-          type: string
-          format: date
         board_groups:
           type: array
           items:
