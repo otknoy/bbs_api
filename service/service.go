@@ -45,7 +45,6 @@ func (s *bbsService) BoardListGet(ctx context.Context) (openapi.ImplResponse, er
 	return openapi.Response(
 		http.StatusOK,
 		openapi.BoardListResponse{
-			LastUpdated: "no implementation",
 			BoardGroups: bgs,
 		},
 	), nil

@@ -10,7 +10,5 @@
 package openapi
 
 type BoardListResponse struct {
-	LastUpdated string `json:"last_updated,omitempty"`
-
 	BoardGroups []BoardGroup `json:"board_groups,omitempty"`
 }
