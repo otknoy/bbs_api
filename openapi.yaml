@@ -127,6 +127,7 @@ components:
         comment_list:
           type: array
           items:
+            $ref: "#/components/schemas/Comment"
             type: object
             properties:
               meta:
@@ -143,6 +144,22 @@ components:
                     type: string
                   comment:
                     type: string
+    Comment:
+      properties:
+        meta:
+          type: object
+          properties:
+            number:
+              type: integer
+            user_name:
+              type: string
+            user_id:
+              type: string
+            posted_at:
+              type: string
+              format: date-time
+        text:
+          type: string
     Error:
       required:
         - code

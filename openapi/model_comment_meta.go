@@ -9,6 +9,16 @@
 
 package openapi
 
-type ThreadResponse struct {
-	CommentList []Comment `json:"comment_list,omitempty"`
+import (
+	"time"
+)
+
+type CommentMeta struct {
+	Number int32 `json:"number,omitempty"`
+
+	UserName string `json:"user_name,omitempty"`
+
+	UserId string `json:"user_id,omitempty"`
+
+	PostedAt time.Time `json:"posted_at,omitempty"`
 }
