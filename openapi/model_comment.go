@@ -9,6 +9,8 @@
 
 package openapi
 
-type ThreadResponse struct {
-	CommentList []Comment `json:"comment_list,omitempty"`
+type Comment struct {
+	Meta CommentMeta `json:"meta,omitempty"`
+
+	Text string `json:"text,omitempty"`
 }
