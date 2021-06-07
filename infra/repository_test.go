@@ -3,6 +3,7 @@ package infra_test
 import (
 	"bbs_api/domain"
 	"bbs_api/domain/boardlist"
+	"bbs_api/domain/thread"
 	"bbs_api/domain/threadlist"
 	"bbs_api/infra"
 	_ "embed"
@@ -10,6 +11,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/google/go-cmp/cmp"
 )
@@ -20,6 +22,11 @@ var (
 
 	//go:embed test_data/hayabusa9_news_subback.html
 	threadListHtml string
+
+	//go:embed test_data/hayabusa9_news_1622978925.html
+	threadHtml string
+
+	jst, _ = time.LoadLocation("Asia/Tokyo")
 )
 
 func TestBoardRepository_GetBoardGroups(t *testing.T) {
@@ -137,6 +144,75 @@ func TestThreadListRepository_GetThreadList(t *testing.T) {
 			{ThreadId: "9245000000", Name: "432: ★ 5ちゃんねるからのお知らせ (3)"},
 			{ThreadId: "9240200226", Name: "433: 【ご案内】新型コロナウイルスについて About COVID-19 (4)"},
 			{ThreadId: "9240180801", Name: "434: 【すすコイン】期間限定キャンペーンのお知らせ！ (37)"},
+		},
+	); diff != "" {
+		t.Errorf("differs: %v", diff)
+	}
+
+}
+
+func TestThreadRepository_GetThread(t *testing.T) {
+	serverId := domain.ServerId("test-serverId")
+	boardId := domain.BoardId("test-boardId")
+	threadId := domain.ThreadId("test-threadId")
+
+	s := NewStubServer(t, "/test-boardId/thread/test-threadId", threadHtml)
+	defer s.Close()
+
+	r := infra.NewThreadRepository(func(sId domain.ServerId, bId domain.BoardId, tId domain.ThreadId) string {
+		if sId != serverId || bId != boardId || tId != threadId {
+			t.Fatalf("invalid args of urlBuilderFunc: serverId=%s, boardId=%s, threadId=%s", sId, bId, tId)
+		}
+
+		return fmt.Sprintf("%s/%s/thread/%s", s.URL, boardId, threadId)
+	})
+
+	got := r.GetThread(serverId, boardId, threadId)
+
+	if diff := cmp.Diff(
+		got.CommentList[:3],
+		[]thread.Comment{
+			{
+				Meta: thread.Meta{
+					Number:   1,
+					UserName: "セドナ(神奈川県) [ﾆﾀﾞ]",
+					UserId:   "ID:8BHhTYQx0",
+					PostedAt: time.Date(2021, 6, 6, 20, 28, 45, 980*1e6, jst),
+				},
+				Text: `<img src="//img.5ch.net/ico/1fu.gif"/>
+大きな販路を失った台湾産パイナップルを応援しようと、愛媛県松山市職員有志が職員に
+共同購入を呼び掛けたところ約９トン分の注文があり、３日に現物が到着した。
+台湾から同市の学校給食へのパイナップル無償提供の話が進んでおり、お礼の意味もあるという。
+同市は２０１４年に台北市と友好交流協定を結ぶなど、台湾と関係を深めている。
+
+１９年７月に松山―台北の定期航空便が就航し、同年の松山市観光客推定では
+国・地域別の外国人宿泊客数は台湾が６万３２００人と最も多かった。しかし、
+新型コロナウイルス感染拡大で航空便は欠航が続いており、台湾の東京パラ柔道代表選手の松山での事前合宿は中止が決まった。
+
+
+同課の窪田勝彦国際交流担当課長は「行き来は難しくなっているが、新型コロナ収束後を見据え、
+さまざまな形で交流を深めたい」と話した。
+
+<a href="http://jump.5ch.net/?https://www.ehime-np.co.jp/article/news202106040014" target="_blank">https://www.ehime-np.co.jp/article/news202106040014</a>`,
+			},
+			{
+				Meta: thread.Meta{
+					Number:   2,
+					UserName: "環状星雲(光) [DE]",
+					UserId:   "ID:KSqiCSi70",
+					PostedAt: time.Date(2021, 6, 6, 20, 29, 31, 700*1e6, jst),
+				},
+				Text: "さよならと書いた毛蟹～",
+			},
+			{
+				Meta: thread.Meta{
+					Number:   3,
+					UserName: "水メーザー天体(東京都) [EU]",
+					UserId:   "ID:N7fBmzZc0",
+					PostedAt: time.Date(2021, 6, 6, 20, 31, 8, 590*1e6, jst),
+				},
+				Text: "( ´∀`)二個買ったよ～",
+			},
 		},
 	); diff != "" {
 		t.Errorf("differs: %v", diff)
