@@ -2,6 +2,7 @@ package infra
 
 import (
 	"bufio"
+	"log"
 	"net/http"
 
 	"github.com/PuerkitoBio/goquery"
@@ -10,11 +11,16 @@ import (
 )
 
 func newShiftJISDocument(url string) (*goquery.Document, error) {
-	res, err := http.Get(url)
+	req, _ := http.NewRequest("GET", url, nil)
+	req.Header.Add("User-Agent", "curl/7.74.0")
+
+	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
 	defer res.Body.Close()
+
+	log.Printf("http get: url=%s, status=%s\n", url, res.Status)
 
 	reader := transform.NewReader(
 		bufio.NewReader(res.Body),
