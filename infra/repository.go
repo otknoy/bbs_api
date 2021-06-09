@@ -186,11 +186,6 @@ func (r *threadRepository) GetThread(serverId domain.ServerId, boardId domain.Bo
 			return strings.Join(lines, "\n")
 		}()
 
-		if i <= 3 {
-			log.Println(s.Find("div.meta > span.date").Text())
-			log.Println(postedAt)
-		}
-
 		l = append(
 			l,
 			thread.Comment{
