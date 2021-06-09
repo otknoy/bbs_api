@@ -3,23 +3,25 @@ package service
 import (
 	"bbs_api/domain"
 	"bbs_api/domain/boardlist"
+	"bbs_api/domain/thread"
 	"bbs_api/domain/threadlist"
 	"bbs_api/openapi"
 	"context"
-	"errors"
 	"net/http"
 )
 
 func NewBbsService(
 	blRepo boardlist.BoardListRepository,
 	thRepo threadlist.ThreadListRepository,
+	tRepo thread.ThreadRepository,
 ) openapi.DefaultApiServicer {
-	return &bbsService{blRepo, thRepo}
+	return &bbsService{blRepo, thRepo, tRepo}
 }
 
 type bbsService struct {
 	boardListRepository  boardlist.BoardListRepository
 	threadListRepository threadlist.ThreadListRepository
+	threadRepository     thread.ThreadRepository
 }
 
 func (s *bbsService) BoardListGet(ctx context.Context) (openapi.ImplResponse, error) {
@@ -71,5 +73,25 @@ func (s *bbsService) ServerBoardIdThreadListGet(ctx context.Context, server stri
 }
 
 func (s *bbsService) ServerBoardIdThreadThreadIdGet(ctx context.Context, server string, boardId string, threadId string) (openapi.ImplResponse, error) {
-	return openapi.Response(http.StatusNotImplemented, nil), errors.New("ServerBoardIdThreadThreadIdGet method not implemented")
+	t := s.threadRepository.GetThread(domain.ServerId(server), domain.BoardId(boardId), domain.ThreadId(threadId))
+
+	l := make([]openapi.Comment, len(t.CommentList))
+	for i, c := range t.CommentList {
+		l[i] = openapi.Comment{
+			Meta: openapi.CommentMeta{
+				Number:   int32(c.Meta.Number),
+				UserName: c.Meta.UserName,
+				UserId:   c.Meta.UserId,
+				PostedAt: c.Meta.PostedAt,
+			},
+			Text: c.Text,
+		}
+	}
+
+	return openapi.Response(
+		http.StatusOK,
+		openapi.ThreadResponse{
+			CommentList: l,
+		},
+	), nil
 }

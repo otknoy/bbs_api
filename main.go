@@ -18,6 +18,9 @@ func main() {
 		infra.NewThreadListRepository(func(serverId domain.ServerId, boardId domain.BoardId) string {
 			return fmt.Sprintf("http://%s.5ch.net/%s/subback.html", serverId, boardId)
 		}),
+		infra.NewThreadRepository(func(serverId domain.ServerId, boardId domain.BoardId, threadId domain.ThreadId) string {
+			return fmt.Sprintf("http://%s.5ch.net/test/read.cgi/%s/%s", serverId, boardId, threadId)
+		}),
 	)
 	DefaultApiController := openapi.NewDefaultApiController(svc)
 
