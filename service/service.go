@@ -52,8 +52,8 @@ func (s *bbsService) BoardListGet(ctx context.Context) (openapi.ImplResponse, er
 	), nil
 }
 
-func (s *bbsService) ServerBoardIdThreadListGet(ctx context.Context, server string, boardId string) (openapi.ImplResponse, error) {
-	threadList := s.threadListRepository.GetThreadList(domain.ServerId(server), domain.BoardId(boardId))
+func (s *bbsService) ServerIdBoardIdThreadListGet(ctx context.Context, serverId string, boardId string) (openapi.ImplResponse, error) {
+	threadList := s.threadListRepository.GetThreadList(domain.ServerId(serverId), domain.BoardId(boardId))
 
 	return openapi.Response(
 		http.StatusOK,
@@ -72,8 +72,8 @@ func (s *bbsService) ServerBoardIdThreadListGet(ctx context.Context, server stri
 	), nil
 }
 
-func (s *bbsService) ServerBoardIdThreadThreadIdGet(ctx context.Context, server string, boardId string, threadId string) (openapi.ImplResponse, error) {
-	t := s.threadRepository.GetThread(domain.ServerId(server), domain.BoardId(boardId), domain.ThreadId(threadId))
+func (s *bbsService) ServerIdBoardIdThreadThreadIdGet(ctx context.Context, serverId string, boardId string, threadId string) (openapi.ImplResponse, error) {
+	t := s.threadRepository.GetThread(domain.ServerId(serverId), domain.BoardId(boardId), domain.ThreadId(threadId))
 
 	l := make([]openapi.Comment, len(t.CommentList))
 	for i, c := range t.CommentList {
