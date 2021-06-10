@@ -40,9 +40,9 @@ func (s *DefaultApiService) BoardListGet(ctx context.Context) (ImplResponse, err
 	return Response(http.StatusNotImplemented, nil), errors.New("BoardListGet method not implemented")
 }
 
-// ServerBoardIdThreadListGet -
-func (s *DefaultApiService) ServerBoardIdThreadListGet(ctx context.Context, server string, boardId string) (ImplResponse, error) {
-	// TODO - update ServerBoardIdThreadListGet with the required logic for this service method.
+// ServerIdBoardIdThreadListGet -
+func (s *DefaultApiService) ServerIdBoardIdThreadListGet(ctx context.Context, serverId string, boardId string) (ImplResponse, error) {
+	// TODO - update ServerIdBoardIdThreadListGet with the required logic for this service method.
 	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
 	//TODO: Uncomment the next line to return response Response(200, ThreadListResponse{}) or use other options such as http.Ok ...
@@ -51,12 +51,12 @@ func (s *DefaultApiService) ServerBoardIdThreadListGet(ctx context.Context, serv
 	//TODO: Uncomment the next line to return response Response(500, Error{}) or use other options such as http.Ok ...
 	//return Response(500, Error{}), nil
 
-	return Response(http.StatusNotImplemented, nil), errors.New("ServerBoardIdThreadListGet method not implemented")
+	return Response(http.StatusNotImplemented, nil), errors.New("ServerIdBoardIdThreadListGet method not implemented")
 }
 
-// ServerBoardIdThreadThreadIdGet -
-func (s *DefaultApiService) ServerBoardIdThreadThreadIdGet(ctx context.Context, server string, boardId string, threadId string) (ImplResponse, error) {
-	// TODO - update ServerBoardIdThreadThreadIdGet with the required logic for this service method.
+// ServerIdBoardIdThreadThreadIdGet -
+func (s *DefaultApiService) ServerIdBoardIdThreadThreadIdGet(ctx context.Context, serverId string, boardId string, threadId string) (ImplResponse, error) {
+	// TODO - update ServerIdBoardIdThreadThreadIdGet with the required logic for this service method.
 	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
 	//TODO: Uncomment the next line to return response Response(200, ThreadResponse{}) or use other options such as http.Ok ...
@@ -65,5 +65,5 @@ func (s *DefaultApiService) ServerBoardIdThreadThreadIdGet(ctx context.Context, 
 	//TODO: Uncomment the next line to return response Response(500, Error{}) or use other options such as http.Ok ...
 	//return Response(500, Error{}), nil
 
-	return Response(http.StatusNotImplemented, nil), errors.New("ServerBoardIdThreadThreadIdGet method not implemented")
+	return Response(http.StatusNotImplemented, nil), errors.New("ServerIdBoardIdThreadThreadIdGet method not implemented")
 }

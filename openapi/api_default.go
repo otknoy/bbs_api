@@ -36,16 +36,16 @@ func (c *DefaultApiController) Routes() Routes {
 			c.BoardListGet,
 		},
 		{
-			"ServerBoardIdThreadListGet",
+			"ServerIdBoardIdThreadListGet",
 			strings.ToUpper("Get"),
-			"/{server}/{board_id}/threadList",
-			c.ServerBoardIdThreadListGet,
+			"/{server_id}/{board_id}/threadList",
+			c.ServerIdBoardIdThreadListGet,
 		},
 		{
-			"ServerBoardIdThreadThreadIdGet",
+			"ServerIdBoardIdThreadThreadIdGet",
 			strings.ToUpper("Get"),
-			"/{server}/{board_id}/thread/{thread_id}",
-			c.ServerBoardIdThreadThreadIdGet,
+			"/{server_id}/{board_id}/thread/{thread_id}",
+			c.ServerIdBoardIdThreadThreadIdGet,
 		},
 	}
 }
@@ -63,14 +63,14 @@ func (c *DefaultApiController) BoardListGet(w http.ResponseWriter, r *http.Reque
 
 }
 
-// ServerBoardIdThreadListGet -
-func (c *DefaultApiController) ServerBoardIdThreadListGet(w http.ResponseWriter, r *http.Request) {
+// ServerIdBoardIdThreadListGet -
+func (c *DefaultApiController) ServerIdBoardIdThreadListGet(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	server := params["server"]
+	serverId := params["server_id"]
 
 	boardId := params["board_id"]
 
-	result, err := c.service.ServerBoardIdThreadListGet(r.Context(), server, boardId)
+	result, err := c.service.ServerIdBoardIdThreadListGet(r.Context(), serverId, boardId)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		EncodeJSONResponse(err.Error(), &result.Code, w)
@@ -81,16 +81,16 @@ func (c *DefaultApiController) ServerBoardIdThreadListGet(w http.ResponseWriter,
 
 }
 
-// ServerBoardIdThreadThreadIdGet -
-func (c *DefaultApiController) ServerBoardIdThreadThreadIdGet(w http.ResponseWriter, r *http.Request) {
+// ServerIdBoardIdThreadThreadIdGet -
+func (c *DefaultApiController) ServerIdBoardIdThreadThreadIdGet(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	server := params["server"]
+	serverId := params["server_id"]
 
 	boardId := params["board_id"]
 
 	threadId := params["thread_id"]
 
-	result, err := c.service.ServerBoardIdThreadThreadIdGet(r.Context(), server, boardId, threadId)
+	result, err := c.service.ServerIdBoardIdThreadThreadIdGet(r.Context(), serverId, boardId, threadId)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		EncodeJSONResponse(err.Error(), &result.Code, w)

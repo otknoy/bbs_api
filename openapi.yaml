@@ -26,11 +26,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  /{server}/{board_id}/threadList:
+  /{server_id}/{board_id}/threadList:
     get:
       description: Get thread list
       parameters:
-        - name: server
+        - name: server_id
           in: path
           required: true
           schema:
@@ -54,11 +54,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  /{server}/{board_id}/thread/{thread_id}:
+  /{server_id}/{board_id}/thread/{thread_id}:
     get:
       description: Get thread
       parameters:
-          - name: server
+          - name: server_id
             in: path
             required: true
             schema:
