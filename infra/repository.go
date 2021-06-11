@@ -5,6 +5,7 @@ import (
 	"bbs_api/domain/boardlist"
 	"bbs_api/domain/thread"
 	"bbs_api/domain/threadlist"
+	"context"
 	"log"
 	"net/url"
 	"strconv"
@@ -25,7 +26,9 @@ type boardListRepository struct {
 }
 
 func (r *boardListRepository) GetBoardGroups() boardlist.BoardGroups {
-	doc, _ := newShiftJISDocument(r.host + "/bbsmenu.html")
+	ctx := context.Background()
+
+	doc, _ := newShiftJISDocument(ctx, r.host+"/bbsmenu.html")
 
 	m := make(map[string]boardlist.BoardList)
 	l := make([]string, 0)
@@ -95,8 +98,10 @@ type threadListRepository struct {
 }
 
 func (r *threadListRepository) GetThreadList(serverId domain.ServerId, boardId domain.BoardId) threadlist.ThreadList {
+	ctx := context.Background()
+
 	url := r.urlBuilderFunc(serverId, boardId)
-	doc, _ := newShiftJISDocument(url)
+	doc, _ := newShiftJISDocument(ctx, url)
 
 	threadList := make([]threadlist.Thread, 0)
 	doc.Find("div > small#trad > a").Each(func(_ int, s *goquery.Selection) {
@@ -135,8 +140,10 @@ type threadRepository struct {
 var jst, _ = time.LoadLocation("Asia/Tokyo")
 
 func (r *threadRepository) GetThread(serverId domain.ServerId, boardId domain.BoardId, threadId domain.ThreadId) *thread.Thread {
+	ctx := context.Background()
+
 	url := r.urlBuilderFunc(serverId, boardId, threadId)
-	doc, _ := newShiftJISDocument(url)
+	doc, _ := newShiftJISDocument(ctx, url)
 
 	l := make([]thread.Comment, 0)
 	doc.Find("body > div > div.thread > div.post").Each(func(i int, s *goquery.Selection) {
