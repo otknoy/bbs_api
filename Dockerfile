@@ -7,7 +7,7 @@ COPY go.sum .
 RUN go mod download
 
 COPY openapi/ openapi/
-COPY service/ service/
+COPY interfaces/ interfaces/
 COPY infra/ infra/
 COPY domain/ domain
 COPY main.go .
