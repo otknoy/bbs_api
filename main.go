@@ -22,9 +22,9 @@ func main() {
 			return fmt.Sprintf("http://%s.5ch.net/test/read.cgi/%s/%s", serverId, boardId, threadId)
 		}),
 	)
-	DefaultApiController := openapi.NewDefaultApiController(svc)
+	defaultApiController := openapi.NewDefaultApiController(svc)
 
-	router := openapi.NewRouter(DefaultApiController)
+	router := openapi.NewRouter(defaultApiController)
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
