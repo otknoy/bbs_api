@@ -2,30 +2,23 @@ package interfaces
 
 import (
 	"bbs_api/domain"
-	"bbs_api/domain/boardlist"
-	"bbs_api/domain/thread"
 	"bbs_api/domain/threadlist"
 	"bbs_api/openapi"
+	"bbs_api/service"
 	"context"
 	"net/http"
 )
 
-func NewBbsController(
-	blRepo boardlist.BoardListRepository,
-	thRepo threadlist.ThreadListRepository,
-	tRepo thread.ThreadRepository,
-) openapi.DefaultApiServicer {
-	return &bbsController{blRepo, thRepo, tRepo}
+func NewBbsController(bbsService service.BbsService) openapi.DefaultApiServicer {
+	return &bbsController{bbsService}
 }
 
 type bbsController struct {
-	boardListRepository  boardlist.BoardListRepository
-	threadListRepository threadlist.ThreadListRepository
-	threadRepository     thread.ThreadRepository
+	bbsService service.BbsService
 }
 
 func (s *bbsController) BoardListGet(ctx context.Context) (openapi.ImplResponse, error) {
-	boardGroups := s.boardListRepository.GetBoardGroups()
+	boardGroups := s.bbsService.GetBoardGroups()
 
 	bgs := make([]openapi.BoardGroup, len(boardGroups))
 	for i, bg := range boardGroups {
@@ -53,7 +46,7 @@ func (s *bbsController) BoardListGet(ctx context.Context) (openapi.ImplResponse,
 }
 
 func (s *bbsController) ServerIdBoardIdThreadListGet(ctx context.Context, serverId string, boardId string) (openapi.ImplResponse, error) {
-	threadList := s.threadListRepository.GetThreadList(domain.ServerId(serverId), domain.BoardId(boardId))
+	threadList := s.bbsService.GetThreadList(domain.ServerId(serverId), domain.BoardId(boardId))
 
 	return openapi.Response(
 		http.StatusOK,
@@ -73,7 +66,7 @@ func (s *bbsController) ServerIdBoardIdThreadListGet(ctx context.Context, server
 }
 
 func (s *bbsController) ServerIdBoardIdThreadThreadIdGet(ctx context.Context, serverId string, boardId string, threadId string) (openapi.ImplResponse, error) {
-	t := s.threadRepository.GetThread(domain.ServerId(serverId), domain.BoardId(boardId), domain.ThreadId(threadId))
+	t := s.bbsService.GetThread(domain.ServerId(serverId), domain.BoardId(boardId), domain.ThreadId(threadId))
 
 	l := make([]openapi.Comment, len(t.CommentList))
 	for i, c := range t.CommentList {
