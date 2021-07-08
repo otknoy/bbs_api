@@ -1,4 +1,4 @@
-package infra
+package http
 
 import (
 	"bufio"
@@ -11,7 +11,7 @@ import (
 	"golang.org/x/text/transform"
 )
 
-func newShiftJISDocument(ctx context.Context, url string) (*goquery.Document, error) {
+func NewShiftJISDocument(ctx context.Context, url string) (*goquery.Document, error) {
 	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	req.Header.Add("User-Agent", "curl/7.74.0")
 
