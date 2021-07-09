@@ -1,14 +1,14 @@
-package http_test
+package bbsclient_test
 
 import (
-	"bbs_api/infra/http"
+	"bbs_api/infra/bbsclient"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
 )
 
 func TestUrlBuilder(t *testing.T) {
-	b := http.NewUrlBuilder("example.com")
+	b := bbsclient.NewUrlBuilder("example.com")
 
 	t.Run("GetBuildBoardUrl", func(t *testing.T) {
 		want := "http://menu.example.com/bbsmenu.html"

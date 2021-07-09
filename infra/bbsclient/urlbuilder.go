@@ -1,4 +1,4 @@
-package http
+package bbsclient
 
 import (
 	"bbs_api/domain"

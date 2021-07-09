@@ -2,7 +2,7 @@ package main
 
 import (
 	"bbs_api/infra"
-	ihttp "bbs_api/infra/http"
+	"bbs_api/infra/bbsclient"
 	"bbs_api/interfaces"
 	"bbs_api/openapi"
 	"bbs_api/service"
@@ -13,7 +13,7 @@ import (
 func main() {
 	log.Printf("Server started")
 
-	ub := ihttp.NewUrlBuilder("5ch.net")
+	ub := bbsclient.NewUrlBuilder("5ch.net")
 
 	svc := interfaces.NewBbsController(
 		service.NewBbsService(
