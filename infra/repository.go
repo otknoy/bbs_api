@@ -5,7 +5,7 @@ import (
 	"bbs_api/domain/boardlist"
 	"bbs_api/domain/thread"
 	"bbs_api/domain/threadlist"
-	"bbs_api/infra/http"
+	"bbs_api/infra/bbsclient"
 	"context"
 	"log"
 	"net/url"
@@ -29,7 +29,7 @@ type boardListRepository struct {
 func (r *boardListRepository) GetBoardGroups() boardlist.BoardGroups {
 	ctx := context.Background()
 
-	doc, _ := http.NewShiftJISDocument(ctx, r.host+"/bbsmenu.html")
+	doc, _ := bbsclient.NewShiftJISDocument(ctx, r.host+"/bbsmenu.html")
 
 	m := make(map[string]boardlist.BoardList)
 	l := make([]string, 0)
@@ -88,21 +88,19 @@ func (r *boardListRepository) GetBoardGroups() boardlist.BoardGroups {
 	return boardlist.BoardGroups(bgs)
 }
 
-func NewThreadListRepository(f urlBuilderFunc) threadlist.ThreadListRepository {
-	return &threadListRepository{
-		urlBuilderFunc: f,
-	}
+func NewThreadListRepository(ub bbsclient.UrlBuilder) threadlist.ThreadListRepository {
+	return &threadListRepository{ub}
 }
 
 type threadListRepository struct {
-	urlBuilderFunc urlBuilderFunc
+	ub bbsclient.UrlBuilder
 }
 
 func (r *threadListRepository) GetThreadList(serverId domain.ServerId, boardId domain.BoardId) threadlist.ThreadList {
 	ctx := context.Background()
 
-	url := r.urlBuilderFunc(serverId, boardId)
-	doc, _ := http.NewShiftJISDocument(ctx, url)
+	url := r.ub.BuildGetThradListUrl(serverId, boardId)
+	doc, _ := bbsclient.NewShiftJISDocument(ctx, url)
 
 	threadList := make([]threadlist.Thread, 0)
 	doc.Find("div > small#trad > a").Each(func(_ int, s *goquery.Selection) {
@@ -126,16 +124,12 @@ func (r *threadListRepository) GetThreadList(serverId domain.ServerId, boardId d
 	return threadlist.ThreadList(threadList)
 }
 
-type urlBuilderFunc func(domain.ServerId, domain.BoardId) (url string)
-
-func NewThreadRepository(f threadUrlBuilderFunc) thread.ThreadRepository {
-	return &threadRepository{
-		urlBuilderFunc: f,
-	}
+func NewThreadRepository(ub bbsclient.UrlBuilder) thread.ThreadRepository {
+	return &threadRepository{ub}
 }
 
 type threadRepository struct {
-	urlBuilderFunc threadUrlBuilderFunc
+	ub bbsclient.UrlBuilder
 }
 
 var jst, _ = time.LoadLocation("Asia/Tokyo")
@@ -143,8 +137,8 @@ var jst, _ = time.LoadLocation("Asia/Tokyo")
 func (r *threadRepository) GetThread(serverId domain.ServerId, boardId domain.BoardId, threadId domain.ThreadId) *thread.Thread {
 	ctx := context.Background()
 
-	url := r.urlBuilderFunc(serverId, boardId, threadId)
-	doc, _ := http.NewShiftJISDocument(ctx, url)
+	url := r.ub.BuildGetThreadUrl(serverId, boardId, threadId)
+	doc, _ := bbsclient.NewShiftJISDocument(ctx, url)
 
 	l := make([]thread.Comment, 0)
 	doc.Find("body > div > div.thread > div.post").Each(func(i int, s *goquery.Selection) {
@@ -211,5 +205,3 @@ func (r *threadRepository) GetThread(serverId domain.ServerId, boardId domain.Bo
 		CommentList: l,
 	}
 }
-
-type threadUrlBuilderFunc func(domain.ServerId, domain.BoardId, domain.ThreadId) (url string)
