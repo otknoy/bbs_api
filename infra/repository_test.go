@@ -6,6 +6,7 @@ import (
 	"bbs_api/domain/thread"
 	"bbs_api/domain/threadlist"
 	"bbs_api/infra"
+	"bbs_api/infra/bbsclient"
 	_ "embed"
 	"fmt"
 	"net/http"
@@ -28,6 +29,25 @@ var (
 
 	jst, _ = time.LoadLocation("Asia/Tokyo")
 )
+
+type urlBuilderMock struct {
+	bbsclient.UrlBuilder
+	MockBuildGetBoardUrl     func() string
+	MockBuildGetThradListUrl func(domain.ServerId, domain.BoardId) string
+	MockBuildGetThreadUrl    func(domain.ServerId, domain.BoardId, domain.ThreadId) string
+}
+
+func (m *urlBuilderMock) BuildGetBoardUrl() string {
+	return m.MockBuildGetBoardUrl()
+}
+
+func (m *urlBuilderMock) BuildGetThradListUrl(sId domain.ServerId, bId domain.BoardId) string {
+	return m.MockBuildGetThradListUrl(sId, bId)
+}
+
+func (m *urlBuilderMock) BuildGetThreadUrl(sId domain.ServerId, bId domain.BoardId, tId domain.ThreadId) string {
+	return m.MockBuildGetThreadUrl(sId, bId, tId)
+}
 
 func TestBoardRepository_GetBoardGroups(t *testing.T) {
 	s := NewStubServer(t, "/bbsmenu.html", boardListHtml)
@@ -117,12 +137,14 @@ func TestThreadListRepository_GetThreadList(t *testing.T) {
 	s := NewStubServer(t, "/test-boardId/subback.html", threadListHtml)
 	defer s.Close()
 
-	r := infra.NewThreadListRepository(func(sId domain.ServerId, bId domain.BoardId) string {
-		if sId != serverId || bId != boardId {
-			t.Fatalf("invalid args of urlBuilderFunc: serverId=%s, boardId=%s", sId, bId)
-		}
+	r := infra.NewThreadListRepository(&urlBuilderMock{
+		MockBuildGetThradListUrl: func(sId domain.ServerId, bId domain.BoardId) string {
+			if sId != serverId || bId != boardId {
+				t.Fatalf("invalid args of urlBuilderFunc: serverId=%s, boardId=%s", sId, bId)
+			}
 
-		return fmt.Sprintf("%s/%s/subback.html", s.URL, boardId)
+			return fmt.Sprintf("%s/%s/subback.html", s.URL, boardId)
+		},
 	})
 
 	got := r.GetThreadList(serverId, boardId)
@@ -159,12 +181,14 @@ func TestThreadRepository_GetThread(t *testing.T) {
 	s := NewStubServer(t, "/test-boardId/thread/test-threadId", threadHtml)
 	defer s.Close()
 
-	r := infra.NewThreadRepository(func(sId domain.ServerId, bId domain.BoardId, tId domain.ThreadId) string {
-		if sId != serverId || bId != boardId || tId != threadId {
-			t.Fatalf("invalid args of urlBuilderFunc: serverId=%s, boardId=%s, threadId=%s", sId, bId, tId)
-		}
+	r := infra.NewThreadRepository(&urlBuilderMock{
+		MockBuildGetThreadUrl: func(sId domain.ServerId, bId domain.BoardId, tId domain.ThreadId) string {
+			if sId != serverId || bId != boardId || tId != threadId {
+				t.Fatalf("invalid args of urlBuilderFunc: serverId=%s, boardId=%s, threadId=%s", sId, bId, tId)
+			}
 
-		return fmt.Sprintf("%s/%s/thread/%s", s.URL, boardId, threadId)
+			return fmt.Sprintf("%s/%s/thread/%s", s.URL, boardId, threadId)
+		},
 	})
 
 	got := r.GetThread(serverId, boardId, threadId)

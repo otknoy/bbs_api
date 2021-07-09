@@ -18,8 +18,8 @@ func main() {
 	svc := interfaces.NewBbsController(
 		service.NewBbsService(
 			infra.NewBoardListRepository("http://menu.5ch.net"),
-			infra.NewThreadListRepository(ub.BuildGetThradListUrl),
-			infra.NewThreadRepository(ub.BuildGetThreadUrl),
+			infra.NewThreadListRepository(ub),
+			infra.NewThreadRepository(ub),
 		),
 	)
 	defaultApiController := openapi.NewDefaultApiController(svc)
