@@ -32,28 +32,32 @@ var (
 
 type urlBuilderMock struct {
 	bbsclient.UrlBuilder
-	MockBuildGetBoardUrl     func() string
-	MockBuildGetThradListUrl func(domain.ServerId, domain.BoardId) string
-	MockBuildGetThreadUrl    func(domain.ServerId, domain.BoardId, domain.ThreadId) string
+	MockBuildBoardListUrl  func() string
+	MockBuildThreadListUrl func(domain.ServerId, domain.BoardId) string
+	MockBuildThreadUrl     func(domain.ServerId, domain.BoardId, domain.ThreadId) string
 }
 
-func (m *urlBuilderMock) BuildGetBoardUrl() string {
-	return m.MockBuildGetBoardUrl()
+func (m *urlBuilderMock) BuildBoardListUrl() string {
+	return m.MockBuildBoardListUrl()
 }
 
-func (m *urlBuilderMock) BuildGetThradListUrl(sId domain.ServerId, bId domain.BoardId) string {
-	return m.MockBuildGetThradListUrl(sId, bId)
+func (m *urlBuilderMock) BuildThreadListUrl(sId domain.ServerId, bId domain.BoardId) string {
+	return m.MockBuildThreadListUrl(sId, bId)
 }
 
-func (m *urlBuilderMock) BuildGetThreadUrl(sId domain.ServerId, bId domain.BoardId, tId domain.ThreadId) string {
-	return m.MockBuildGetThreadUrl(sId, bId, tId)
+func (m *urlBuilderMock) BuildThreadUrl(sId domain.ServerId, bId domain.BoardId, tId domain.ThreadId) string {
+	return m.MockBuildThreadUrl(sId, bId, tId)
 }
 
 func TestBoardRepository_GetBoardGroups(t *testing.T) {
 	s := NewStubServer(t, "/bbsmenu.html", boardListHtml)
 	defer s.Close()
 
-	r := infra.NewBoardListRepository(s.URL)
+	r := infra.NewBoardListRepository(&urlBuilderMock{
+		MockBuildBoardListUrl: func() string {
+			return s.URL + "/bbsmenu.html"
+		},
+	})
 
 	got := r.GetBoardGroups()
 
@@ -98,7 +102,11 @@ func TestBoardRepository_GetBoardGroups_number_of_boards(t *testing.T) {
 	s := NewStubServer(t, "/bbsmenu.html", boardListHtml)
 	defer s.Close()
 
-	r := infra.NewBoardListRepository(s.URL)
+	r := infra.NewBoardListRepository(&urlBuilderMock{
+		MockBuildBoardListUrl: func() string {
+			return s.URL + "/bbsmenu.html"
+		},
+	})
 
 	got := r.GetBoardGroups()
 
@@ -138,11 +146,10 @@ func TestThreadListRepository_GetThreadList(t *testing.T) {
 	defer s.Close()
 
 	r := infra.NewThreadListRepository(&urlBuilderMock{
-		MockBuildGetThradListUrl: func(sId domain.ServerId, bId domain.BoardId) string {
+		MockBuildThreadListUrl: func(sId domain.ServerId, bId domain.BoardId) string {
 			if sId != serverId || bId != boardId {
 				t.Fatalf("invalid args of urlBuilderFunc: serverId=%s, boardId=%s", sId, bId)
 			}
-
 			return fmt.Sprintf("%s/%s/subback.html", s.URL, boardId)
 		},
 	})
@@ -182,7 +189,7 @@ func TestThreadRepository_GetThread(t *testing.T) {
 	defer s.Close()
 
 	r := infra.NewThreadRepository(&urlBuilderMock{
-		MockBuildGetThreadUrl: func(sId domain.ServerId, bId domain.BoardId, tId domain.ThreadId) string {
+		MockBuildThreadUrl: func(sId domain.ServerId, bId domain.BoardId, tId domain.ThreadId) string {
 			if sId != serverId || bId != boardId || tId != threadId {
 				t.Fatalf("invalid args of urlBuilderFunc: serverId=%s, boardId=%s, threadId=%s", sId, bId, tId)
 			}
