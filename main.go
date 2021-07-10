@@ -17,7 +17,7 @@ func main() {
 
 	svc := interfaces.NewBbsController(
 		service.NewBbsService(
-			infra.NewBoardListRepository("http://menu.5ch.net"),
+			infra.NewBoardListRepository(ub),
 			infra.NewThreadListRepository(ub),
 			infra.NewThreadRepository(ub),
 		),

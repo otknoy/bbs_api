@@ -18,18 +18,18 @@ import (
 	_ "time/tzdata"
 )
 
-func NewBoardListRepository(host string) boardlist.BoardListRepository {
-	return &boardListRepository{host}
+func NewBoardListRepository(ub bbsclient.UrlBuilder) boardlist.BoardListRepository {
+	return &boardListRepository{ub}
 }
 
 type boardListRepository struct {
-	host string
+	ub bbsclient.UrlBuilder
 }
 
 func (r *boardListRepository) GetBoardGroups() boardlist.BoardGroups {
 	ctx := context.Background()
 
-	doc, _ := bbsclient.NewShiftJISDocument(ctx, r.host+"/bbsmenu.html")
+	doc, _ := bbsclient.NewShiftJISDocument(ctx, r.ub.BuildBoardListUrl())
 
 	m := make(map[string]boardlist.BoardList)
 	l := make([]string, 0)

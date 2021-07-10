@@ -53,7 +53,11 @@ func TestBoardRepository_GetBoardGroups(t *testing.T) {
 	s := NewStubServer(t, "/bbsmenu.html", boardListHtml)
 	defer s.Close()
 
-	r := infra.NewBoardListRepository(s.URL)
+	r := infra.NewBoardListRepository(&urlBuilderMock{
+		MockBuildBoardListUrl: func() string {
+			return s.URL + "/bbsmenu.html"
+		},
+	})
 
 	got := r.GetBoardGroups()
 
@@ -98,7 +102,11 @@ func TestBoardRepository_GetBoardGroups_number_of_boards(t *testing.T) {
 	s := NewStubServer(t, "/bbsmenu.html", boardListHtml)
 	defer s.Close()
 
-	r := infra.NewBoardListRepository(s.URL)
+	r := infra.NewBoardListRepository(&urlBuilderMock{
+		MockBuildBoardListUrl: func() string {
+			return s.URL + "/bbsmenu.html"
+		},
+	})
 
 	got := r.GetBoardGroups()
 
