@@ -10,30 +10,30 @@ import (
 func TestUrlBuilder(t *testing.T) {
 	b := bbsclient.NewUrlBuilder("example.com")
 
-	t.Run("GetBuildBoardUrl", func(t *testing.T) {
+	t.Run("BuildBoardListUrl", func(t *testing.T) {
 		want := "http://menu.example.com/bbsmenu.html"
 
-		got := b.BuildGetBoardUrl()
+		got := b.BuildBoardListUrl()
 
 		if diff := cmp.Diff(want, got); diff != "" {
 			t.Errorf("differ\n%v\n", diff)
 		}
 	})
 
-	t.Run("GetThreadListUrl", func(t *testing.T) {
+	t.Run("BuildThreadListUrl", func(t *testing.T) {
 		want := "http://test-serverId.example.com/test-boardId/subback.html"
 
-		got := b.BuildGetThradListUrl("test-serverId", "test-boardId")
+		got := b.BuildThreadListUrl("test-serverId", "test-boardId")
 
 		if diff := cmp.Diff(want, got); diff != "" {
 			t.Errorf("differ\n%v\n", diff)
 		}
 	})
 
-	t.Run("GetThreadUrl", func(t *testing.T) {
+	t.Run("BuildThreadUrl", func(t *testing.T) {
 		want := "http://test-serverId.example.com/test/read.cgi/test-boardId/test-threadId"
 
-		got := b.BuildGetThreadUrl("test-serverId", "test-boardId", "test-threadId")
+		got := b.BuildThreadUrl("test-serverId", "test-boardId", "test-threadId")
 
 		if diff := cmp.Diff(want, got); diff != "" {
 			t.Errorf("differ\n%v\n", diff)

@@ -99,7 +99,7 @@ type threadListRepository struct {
 func (r *threadListRepository) GetThreadList(serverId domain.ServerId, boardId domain.BoardId) threadlist.ThreadList {
 	ctx := context.Background()
 
-	url := r.ub.BuildGetThradListUrl(serverId, boardId)
+	url := r.ub.BuildThreadListUrl(serverId, boardId)
 	doc, _ := bbsclient.NewShiftJISDocument(ctx, url)
 
 	threadList := make([]threadlist.Thread, 0)
@@ -137,7 +137,7 @@ var jst, _ = time.LoadLocation("Asia/Tokyo")
 func (r *threadRepository) GetThread(serverId domain.ServerId, boardId domain.BoardId, threadId domain.ThreadId) *thread.Thread {
 	ctx := context.Background()
 
-	url := r.ub.BuildGetThreadUrl(serverId, boardId, threadId)
+	url := r.ub.BuildThreadUrl(serverId, boardId, threadId)
 	doc, _ := bbsclient.NewShiftJISDocument(ctx, url)
 
 	l := make([]thread.Comment, 0)
