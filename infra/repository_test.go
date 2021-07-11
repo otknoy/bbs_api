@@ -49,7 +49,7 @@ func (m *urlBuilderMock) BuildThreadUrl(sId domain.ServerId, bId domain.BoardId,
 	return m.MockBuildThreadUrl(sId, bId, tId)
 }
 
-func TestBoardRepository_GetBoardGroups(t *testing.T) {
+func TestBoardRepository(t *testing.T) {
 	s := NewStubServer(t, "/bbsmenu.html", boardListHtml)
 	defer s.Close()
 
@@ -59,83 +59,76 @@ func TestBoardRepository_GetBoardGroups(t *testing.T) {
 		},
 	})
 
-	got := r.GetBoardGroups()
+	t.Run("GetBoardGroups()", func(t *testing.T) {
+		got := r.GetBoardGroups()
 
-	if diff := cmp.Diff(
-		got[0],
-		boardlist.BoardGroup{
-			Name: "地震",
-			BoardList: []boardlist.Board{
-				{
-					Name:     "地震headline",
-					ServerId: "headline",
-					BoardId:  "bbynamazu",
-				},
-				{
-					Name:     "地震速報",
-					ServerId: "egg",
-					BoardId:  "namazuplus",
-				},
-				{
-					Name:     "臨時地震",
-					ServerId: "mao",
-					BoardId:  "eq",
-				},
-				{
-					Name:     "臨時地震+",
-					ServerId: "himawari",
-					BoardId:  "eqplus",
-				},
-				{
-					Name:     "緊急自然災害",
-					ServerId: "rio2016",
-					BoardId:  "lifeline",
+		if diff := cmp.Diff(
+			got[0],
+			boardlist.BoardGroup{
+				Name: "地震",
+				BoardList: []boardlist.Board{
+					{
+						Name:     "地震headline",
+						ServerId: "headline",
+						BoardId:  "bbynamazu",
+					},
+					{
+						Name:     "地震速報",
+						ServerId: "egg",
+						BoardId:  "namazuplus",
+					},
+					{
+						Name:     "臨時地震",
+						ServerId: "mao",
+						BoardId:  "eq",
+					},
+					{
+						Name:     "臨時地震+",
+						ServerId: "himawari",
+						BoardId:  "eqplus",
+					},
+					{
+						Name:     "緊急自然災害",
+						ServerId: "rio2016",
+						BoardId:  "lifeline",
+					},
 				},
 			},
-		},
-	); diff != "" {
-		t.Errorf("differs: %v", diff)
-	}
-}
-
-func TestBoardRepository_GetBoardGroups_number_of_boards(t *testing.T) {
-	s := NewStubServer(t, "/bbsmenu.html", boardListHtml)
-	defer s.Close()
-
-	r := infra.NewBoardListRepository(&urlBuilderMock{
-		MockBuildBoardListUrl: func() string {
-			return s.URL + "/bbsmenu.html"
-		},
+		); diff != "" {
+			t.Errorf("differs: %v", diff)
+		}
 	})
 
-	got := r.GetBoardGroups()
+	t.Run("GetBoardGroups() number_of_boards", func(t *testing.T) {
+		got := r.GetBoardGroups()
 
-	tests := []struct {
-		index int
-		name  string
-		count int
-	}{
-		{0, "地震", 5},
-		{1, "おすすめ", 7},
-		{2, "特別企画", 1},
-		{17, "家電製品", 23},
-		{41, "ＰＣ等", 28},
-		{46, "隔離", 1},
-		{47, "運営案内", 2},
-		{48, "BBSPINK", 116},
-	}
-
-	for _, tt := range tests {
-		boardGroup := got[tt.index]
-
-		if v := boardGroup.Name; v != tt.name {
-			t.Errorf("name differs.\n got=%s\nwant=%s\n", v, tt.name)
+		tests := []struct {
+			index int
+			name  string
+			count int
+		}{
+			{0, "地震", 5},
+			{1, "おすすめ", 7},
+			{2, "特別企画", 1},
+			{17, "家電製品", 23},
+			{41, "ＰＣ等", 28},
+			{46, "隔離", 1},
+			{47, "運営案内", 2},
+			{48, "BBSPINK", 116},
 		}
 
-		if v := len(boardGroup.BoardList); v != tt.count {
-			t.Errorf("number of board list differs.\n got=%d\nwant=%d\n", v, tt.count)
+		for _, tt := range tests {
+			boardGroup := got[tt.index]
+
+			if v := boardGroup.Name; v != tt.name {
+				t.Errorf("name differs.\n got=%s\nwant=%s\n", v, tt.name)
+			}
+
+			if v := len(boardGroup.BoardList); v != tt.count {
+				t.Errorf("number of board list differs.\n got=%d\nwant=%d\n", v, tt.count)
+			}
 		}
-	}
+	})
 }
 
 func TestThreadListRepository_GetThreadList(t *testing.T) {
