@@ -11,7 +11,8 @@ import (
 )
 
 func main() {
-	log.Printf("Server started")
+	log.Println("server start")
+	defer log.Println("server stop")
 
 	ub := bbsclient.NewUrlBuilder("5ch.net")
 
