@@ -36,5 +36,7 @@ func main() {
 	log.Println("server start")
 	defer log.Println("server stop")
 
-	log.Fatal(server.ListenAndServe())
+	if err := server.ListenAndServe(); err != http.ErrServerClosed {
+		log.Fatalln(err)
+	}
 }
