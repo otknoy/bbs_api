@@ -6,26 +6,60 @@ import (
 	"bbs_api/interfaces"
 	"bbs_api/openapi"
 	"bbs_api/service"
+	"context"
+	"fmt"
 	"log"
 	"net/http"
+	"os/signal"
+	"syscall"
+	"time"
 )
 
 func main() {
+	handler := func() http.Handler {
+		ub := bbsclient.NewUrlBuilder("5ch.net")
+
+		defaultApiController := openapi.NewDefaultApiController(
+			interfaces.NewBbsController(
+				service.NewBbsService(
+					infra.NewBoardListRepository(ub),
+					infra.NewThreadListRepository(ub),
+					infra.NewThreadRepository(ub),
+				),
+			),
+		)
+
+		return openapi.NewRouter(defaultApiController)
+	}()
+
+	server := http.Server{
+		Addr:    fmt.Sprintf(":%d", 8080),
+		Handler: handler,
+	}
+
 	log.Println("server start")
 	defer log.Println("server stop")
 
-	ub := bbsclient.NewUrlBuilder("5ch.net")
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
 
-	svc := interfaces.NewBbsController(
-		service.NewBbsService(
-			infra.NewBoardListRepository(ub),
-			infra.NewThreadListRepository(ub),
-			infra.NewThreadRepository(ub),
-		),
-	)
-	defaultApiController := openapi.NewDefaultApiController(svc)
+	done := make(chan struct{})
+	go func() {
+		<-ctx.Done()
 
-	router := openapi.NewRouter(defaultApiController)
+		shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
 
-	log.Fatal(http.ListenAndServe(":8080", router))
+		if err := server.Shutdown(shutdownCtx); err != nil {
+			log.Printf("shutdown error: %v\n", err)
+		}
+
+		close(done)
+	}()
+
+	if err := server.ListenAndServe(); err != http.ErrServerClosed {
+		log.Fatalln(err)
+	}
+
+	<-done
 }
