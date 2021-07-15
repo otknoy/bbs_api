@@ -6,26 +6,35 @@ import (
 	"bbs_api/interfaces"
 	"bbs_api/openapi"
 	"bbs_api/service"
+	"fmt"
 	"log"
 	"net/http"
 )
 
 func main() {
+	handler := func() http.Handler {
+		ub := bbsclient.NewUrlBuilder("5ch.net")
+
+		defaultApiController := openapi.NewDefaultApiController(
+			interfaces.NewBbsController(
+				service.NewBbsService(
+					infra.NewBoardListRepository(ub),
+					infra.NewThreadListRepository(ub),
+					infra.NewThreadRepository(ub),
+				),
+			),
+		)
+
+		return openapi.NewRouter(defaultApiController)
+	}()
+
+	server := http.Server{
+		Addr:    fmt.Sprintf(":%d", 8080),
+		Handler: handler,
+	}
+
 	log.Println("server start")
 	defer log.Println("server stop")
 
-	ub := bbsclient.NewUrlBuilder("5ch.net")
-
-	svc := interfaces.NewBbsController(
-		service.NewBbsService(
-			infra.NewBoardListRepository(ub),
-			infra.NewThreadListRepository(ub),
-			infra.NewThreadRepository(ub),
-		),
-	)
-	defaultApiController := openapi.NewDefaultApiController(svc)
-
-	router := openapi.NewRouter(defaultApiController)
-
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Fatal(server.ListenAndServe())
 }
