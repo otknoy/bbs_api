@@ -7,6 +7,7 @@ import (
 	"bbs_api/domain/threadlist"
 	"bbs_api/infra"
 	"bbs_api/infra/bbsclient"
+	"context"
 	_ "embed"
 	"fmt"
 	"net/http"
@@ -60,7 +61,7 @@ func TestBoardRepository(t *testing.T) {
 	})
 
 	t.Run("GetBoardGroups()", func(t *testing.T) {
-		got := r.GetBoardGroups()
+		got := r.GetBoardGroups(context.Background())
 
 		if diff := cmp.Diff(
 			got[0],
@@ -100,7 +101,7 @@ func TestBoardRepository(t *testing.T) {
 	})
 
 	t.Run("GetBoardGroups() number_of_boards", func(t *testing.T) {
-		got := r.GetBoardGroups()
+		got := r.GetBoardGroups(context.Background())
 
 		tests := []struct {
 			index int
@@ -147,7 +148,7 @@ func TestThreadListRepository_GetThreadList(t *testing.T) {
 		},
 	})
 
-	got := r.GetThreadList(serverId, boardId)
+	got := r.GetThreadList(context.Background(), serverId, boardId)
 
 	if diff := cmp.Diff(
 		got[:3],
@@ -191,7 +192,7 @@ func TestThreadRepository_GetThread(t *testing.T) {
 		},
 	})
 
-	got := r.GetThread(serverId, boardId, threadId)
+	got := r.GetThread(context.Background(), serverId, boardId, threadId)
 
 	if diff := cmp.Diff(
 		got.CommentList[:3],

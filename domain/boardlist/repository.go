@@ -1,5 +1,7 @@
 package boardlist
 
+import "context"
+
 type BoardListRepository interface {
-	GetBoardGroups() BoardGroups
+	GetBoardGroups(context.Context) BoardGroups
 }
