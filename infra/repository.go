@@ -26,9 +26,7 @@ type boardListRepository struct {
 	ub bbsclient.UrlBuilder
 }
 
-func (r *boardListRepository) GetBoardGroups() boardlist.BoardGroups {
-	ctx := context.Background()
-
+func (r *boardListRepository) GetBoardGroups(ctx context.Context) boardlist.BoardGroups {
 	doc, _ := bbsclient.NewShiftJISDocument(ctx, r.ub.BuildBoardListUrl())
 
 	m := make(map[string]boardlist.BoardList)
@@ -96,9 +94,7 @@ type threadListRepository struct {
 	ub bbsclient.UrlBuilder
 }
 
-func (r *threadListRepository) GetThreadList(serverId domain.ServerId, boardId domain.BoardId) threadlist.ThreadList {
-	ctx := context.Background()
-
+func (r *threadListRepository) GetThreadList(ctx context.Context, serverId domain.ServerId, boardId domain.BoardId) threadlist.ThreadList {
 	url := r.ub.BuildThreadListUrl(serverId, boardId)
 	doc, _ := bbsclient.NewShiftJISDocument(ctx, url)
 
@@ -134,9 +130,7 @@ type threadRepository struct {
 
 var jst, _ = time.LoadLocation("Asia/Tokyo")
 
-func (r *threadRepository) GetThread(serverId domain.ServerId, boardId domain.BoardId, threadId domain.ThreadId) *thread.Thread {
-	ctx := context.Background()
-
+func (r *threadRepository) GetThread(ctx context.Context, serverId domain.ServerId, boardId domain.BoardId, threadId domain.ThreadId) *thread.Thread {
 	url := r.ub.BuildThreadUrl(serverId, boardId, threadId)
 	doc, _ := bbsclient.NewShiftJISDocument(ctx, url)
 

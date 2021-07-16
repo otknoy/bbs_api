@@ -18,7 +18,7 @@ type bbsController struct {
 }
 
 func (s *bbsController) BoardListGet(ctx context.Context) (openapi.ImplResponse, error) {
-	boardGroups := s.bbsService.GetBoardGroups()
+	boardGroups := s.bbsService.GetBoardGroups(ctx)
 
 	bgs := make([]openapi.BoardGroup, len(boardGroups))
 	for i, bg := range boardGroups {
@@ -46,7 +46,7 @@ func (s *bbsController) BoardListGet(ctx context.Context) (openapi.ImplResponse,
 }
 
 func (s *bbsController) ServerIdBoardIdThreadListGet(ctx context.Context, serverId string, boardId string) (openapi.ImplResponse, error) {
-	threadList := s.bbsService.GetThreadList(domain.ServerId(serverId), domain.BoardId(boardId))
+	threadList := s.bbsService.GetThreadList(ctx, domain.ServerId(serverId), domain.BoardId(boardId))
 
 	return openapi.Response(
 		http.StatusOK,
@@ -66,7 +66,7 @@ func (s *bbsController) ServerIdBoardIdThreadListGet(ctx context.Context, server
 }
 
 func (s *bbsController) ServerIdBoardIdThreadThreadIdGet(ctx context.Context, serverId string, boardId string, threadId string) (openapi.ImplResponse, error) {
-	t := s.bbsService.GetThread(domain.ServerId(serverId), domain.BoardId(boardId), domain.ThreadId(threadId))
+	t := s.bbsService.GetThread(ctx, domain.ServerId(serverId), domain.BoardId(boardId), domain.ThreadId(threadId))
 
 	l := make([]openapi.Comment, len(t.CommentList))
 	for i, c := range t.CommentList {
