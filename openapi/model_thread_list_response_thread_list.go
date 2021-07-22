@@ -10,7 +10,7 @@
 package openapi
 
 type ThreadListResponseThreadList struct {
-	Id string `json:"id,omitempty"`
+	Id string `json:"id"`
 
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 }

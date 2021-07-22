@@ -10,5 +10,5 @@
 package openapi
 
 type ThreadListResponse struct {
-	ThreadList []ThreadListResponseThreadList `json:"thread_list,omitempty"`
+	ThreadList []ThreadListResponseThreadList `json:"thread_list"`
 }

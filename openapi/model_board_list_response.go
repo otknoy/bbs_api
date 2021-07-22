@@ -10,5 +10,5 @@
 package openapi
 
 type BoardListResponse struct {
-	BoardGroups []BoardGroup `json:"board_groups,omitempty"`
+	BoardGroups []BoardGroup `json:"board_groups"`
 }

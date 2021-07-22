@@ -14,11 +14,11 @@ import (
 )
 
 type CommentMeta struct {
-	Number int32 `json:"number,omitempty"`
+	Number int32 `json:"number"`
 
-	UserName string `json:"user_name,omitempty"`
+	UserName string `json:"user_name"`
 
-	UserId string `json:"user_id,omitempty"`
+	UserId string `json:"user_id"`
 
-	PostedAt time.Time `json:"posted_at,omitempty"`
+	PostedAt time.Time `json:"posted_at"`
 }

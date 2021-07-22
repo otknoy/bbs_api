@@ -90,12 +90,17 @@ paths:
 components:
   schemas:
     BoardListResponse:
+      required:
+        - board_groups
       properties:
         board_groups:
           type: array
           items:
             $ref: "#/components/schemas/BoardGroup"
     BoardGroup:
+      required:
+        - name
+        - board_list
       properties:
         name:
           type: string
@@ -104,6 +109,10 @@ components:
           items:
             $ref: "#/components/schemas/Board"
     Board:
+      required:
+        - name
+        - server_id
+        - board_id
       properties:
         name:
           type: string
@@ -112,42 +121,40 @@ components:
         board_id:
           type: string
     ThreadListResponse:
+      required:
+        - thread_list
       properties:
         thread_list:
           type: array
           items:
             type: object
+            required:
+              - id
+              - name
             properties:
               id:
                 type: string
               name:
                 type: string
     ThreadResponse:
+      required:
+        - comment_list
       properties:
         comment_list:
           type: array
           items:
             $ref: "#/components/schemas/Comment"
-            type: object
-            properties:
-              meta:
-                type: object
-                properties:
-                  number:
-                    type: integer
-                  name:
-                    type: string
-                  posted_at:
-                    type: string
-                    format: date-time
-                  user_id:
-                    type: string
-                  comment:
-                    type: string
     Comment:
+      required:
+        - meta
       properties:
         meta:
           type: object
+          required:
+            - number
+            - user_name
+            - user_id
+            - posted_at
           properties:
             number:
               type: integer

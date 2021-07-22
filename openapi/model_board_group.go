@@ -10,7 +10,7 @@
 package openapi
 
 type BoardGroup struct {
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 
-	BoardList []Board `json:"board_list,omitempty"`
+	BoardList []Board `json:"board_list"`
 }

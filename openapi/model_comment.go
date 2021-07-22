@@ -10,7 +10,7 @@
 package openapi
 
 type Comment struct {
-	Meta CommentMeta `json:"meta,omitempty"`
+	Meta CommentMeta `json:"meta"`
 
 	Text string `json:"text,omitempty"`
 }
