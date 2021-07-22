@@ -10,5 +10,5 @@
 package openapi
 
 type ThreadResponse struct {
-	CommentList []Comment `json:"comment_list,omitempty"`
+	CommentList []Comment `json:"comment_list"`
 }
