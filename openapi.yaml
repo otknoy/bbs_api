@@ -128,22 +128,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Comment"
-            type: object
-            properties:
-              meta:
-                type: object
-                properties:
-                  number:
-                    type: integer
-                  name:
-                    type: string
-                  posted_at:
-                    type: string
-                    format: date-time
-                  user_id:
-                    type: string
-                  comment:
-                    type: string
     Comment:
       properties:
         meta:
