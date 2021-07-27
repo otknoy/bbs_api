@@ -2,6 +2,7 @@ package response_test
 
 import (
 	"bbs_api/domain/boardlist"
+	"bbs_api/domain/threadlist"
 	"bbs_api/interfaces/response"
 	"bbs_api/openapi"
 	"testing"
@@ -41,6 +42,26 @@ func TestCreateBoardListResponse(t *testing.T) {
 	}
 
 	got := response.CreateBoardListResponse(in)
+
+	if diff := cmp.Diff(want, got); diff != "" {
+		t.Errorf("differs\n%v\n", diff)
+	}
+}
+
+func TestCreateThreadListResponse(t *testing.T) {
+	in := threadlist.ThreadList{
+		{ThreadId: "foo", Name: "fooName"},
+		{ThreadId: "bar", Name: "barName"},
+	}
+
+	want := &openapi.ThreadListResponse{
+		ThreadList: []openapi.ThreadListResponseThreadList{
+			{Id: "foo", Name: "fooName"},
+			{Id: "bar", Name: "barName"},
+		},
+	}
+
+	got := response.CreateThreadListResponse(in)
 
 	if diff := cmp.Diff(want, got); diff != "" {
 		t.Errorf("differs\n%v\n", diff)
