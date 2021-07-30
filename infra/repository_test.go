@@ -201,7 +201,7 @@ func TestThreadRepository_GetThread(t *testing.T) {
 				Meta: thread.Meta{
 					Number:   1,
 					UserName: "セドナ(神奈川県) [ﾆﾀﾞ]",
-					UserId:   "ID:8BHhTYQx0",
+					UserId:   "8BHhTYQx0",
 					PostedAt: time.Date(2021, 6, 6, 20, 28, 45, 980*1e6, jst),
 				},
 				Text: `<img src="//img.5ch.net/ico/1fu.gif"/>
@@ -224,7 +224,7 @@ func TestThreadRepository_GetThread(t *testing.T) {
 				Meta: thread.Meta{
 					Number:   2,
 					UserName: "環状星雲(光) [DE]",
-					UserId:   "ID:KSqiCSi70",
+					UserId:   "KSqiCSi70",
 					PostedAt: time.Date(2021, 6, 6, 20, 29, 31, 700*1e6, jst),
 				},
 				Text: "さよならと書いた毛蟹～",
@@ -233,7 +233,7 @@ func TestThreadRepository_GetThread(t *testing.T) {
 				Meta: thread.Meta{
 					Number:   3,
 					UserName: "水メーザー天体(東京都) [EU]",
-					UserId:   "ID:N7fBmzZc0",
+					UserId:   "N7fBmzZc0",
 					PostedAt: time.Date(2021, 6, 6, 20, 31, 8, 590*1e6, jst),
 				},
 				Text: "( ´∀`)二個買ったよ～",
