@@ -138,7 +138,10 @@ func (r *threadRepository) GetThread(ctx context.Context, serverId domain.Server
 	doc.Find("body > div > div.thread > div.post").Each(func(i int, s *goquery.Selection) {
 		number, _ := strconv.ParseInt(s.Find("div.meta > span.number").Text(), 0, 32)
 		name := s.Find("div.meta > span.name").Text()
-		id := s.Find("div.meta > span.uid").Text()
+		id := strings.TrimPrefix(
+			s.Find("div.meta > span.uid").Text(),
+			"ID:",
+		)
 
 		postedAt := func() time.Time {
 			dayNames := map[string]string{
