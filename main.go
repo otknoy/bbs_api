@@ -29,7 +29,16 @@ func main() {
 			),
 		)
 
-		return openapi.NewRouter(defaultApiController)
+		r := openapi.NewRouter(defaultApiController)
+		r.Use(func(next http.Handler) http.Handler {
+			return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+				w.Header().Set("Access-Control-Allow-Origin", "*")
+
+				next.ServeHTTP(w, req)
+			})
+		})
+
+		return r
 	}()
 
 	server := http.Server{
