@@ -14,3 +14,35 @@ type BoardGroup struct {
 
 	BoardList []Board `json:"board_list"`
 }
+
+// AssertBoardGroupRequired checks if the required fields are not zero-ed
+func AssertBoardGroupRequired(obj BoardGroup) error {
+	elements := map[string]interface{}{
+		"name":       obj.Name,
+		"board_list": obj.BoardList,
+	}
+	for name, el := range elements {
+		if isZero := IsZeroValue(el); isZero {
+			return &RequiredError{Field: name}
+		}
+	}
+
+	for _, el := range obj.BoardList {
+		if err := AssertBoardRequired(el); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// AssertRecurseBoardGroupRequired recursively checks if required fields are not zero-ed in a nested slice.
+// Accepts only nested slice of BoardGroup (e.g. [][]BoardGroup), otherwise ErrTypeAssertionError is thrown.
+func AssertRecurseBoardGroupRequired(objSlice interface{}) error {
+	return AssertRecurseInterfaceRequired(objSlice, func(obj interface{}) error {
+		aBoardGroup, ok := obj.(BoardGroup)
+		if !ok {
+			return ErrTypeAssertionError
+		}
+		return AssertBoardGroupRequired(aBoardGroup)
+	})
+}

@@ -12,3 +12,34 @@ package openapi
 type BoardListResponse struct {
 	BoardGroups []BoardGroup `json:"board_groups"`
 }
+
+// AssertBoardListResponseRequired checks if the required fields are not zero-ed
+func AssertBoardListResponseRequired(obj BoardListResponse) error {
+	elements := map[string]interface{}{
+		"board_groups": obj.BoardGroups,
+	}
+	for name, el := range elements {
+		if isZero := IsZeroValue(el); isZero {
+			return &RequiredError{Field: name}
+		}
+	}
+
+	for _, el := range obj.BoardGroups {
+		if err := AssertBoardGroupRequired(el); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// AssertRecurseBoardListResponseRequired recursively checks if required fields are not zero-ed in a nested slice.
+// Accepts only nested slice of BoardListResponse (e.g. [][]BoardListResponse), otherwise ErrTypeAssertionError is thrown.
+func AssertRecurseBoardListResponseRequired(objSlice interface{}) error {
+	return AssertRecurseInterfaceRequired(objSlice, func(obj interface{}) error {
+		aBoardListResponse, ok := obj.(BoardListResponse)
+		if !ok {
+			return ErrTypeAssertionError
+		}
+		return AssertBoardListResponseRequired(aBoardListResponse)
+	})
+}

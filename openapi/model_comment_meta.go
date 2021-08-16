@@ -22,3 +22,32 @@ type CommentMeta struct {
 
 	PostedAt time.Time `json:"posted_at"`
 }
+
+// AssertCommentMetaRequired checks if the required fields are not zero-ed
+func AssertCommentMetaRequired(obj CommentMeta) error {
+	elements := map[string]interface{}{
+		"number":    obj.Number,
+		"user_name": obj.UserName,
+		"user_id":   obj.UserId,
+		"posted_at": obj.PostedAt,
+	}
+	for name, el := range elements {
+		if isZero := IsZeroValue(el); isZero {
+			return &RequiredError{Field: name}
+		}
+	}
+
+	return nil
+}
+
+// AssertRecurseCommentMetaRequired recursively checks if required fields are not zero-ed in a nested slice.
+// Accepts only nested slice of CommentMeta (e.g. [][]CommentMeta), otherwise ErrTypeAssertionError is thrown.
+func AssertRecurseCommentMetaRequired(objSlice interface{}) error {
+	return AssertRecurseInterfaceRequired(objSlice, func(obj interface{}) error {
+		aCommentMeta, ok := obj.(CommentMeta)
+		if !ok {
+			return ErrTypeAssertionError
+		}
+		return AssertCommentMetaRequired(aCommentMeta)
+	})
+}
