@@ -16,14 +16,34 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// A DefaultApiController binds http requests to an api service and writes the service results to the http response
+// DefaultApiController binds http requests to an api service and writes the service results to the http response
 type DefaultApiController struct {
-	service DefaultApiServicer
+	service      DefaultApiServicer
+	errorHandler ErrorHandler
+}
+
+// DefaultApiOption for how the controller is set up.
+type DefaultApiOption func(*DefaultApiController)
+
+// WithDefaultApiErrorHandler inject ErrorHandler into controller
+func WithDefaultApiErrorHandler(h ErrorHandler) DefaultApiOption {
+	return func(c *DefaultApiController) {
+		c.errorHandler = h
+	}
 }
 
 // NewDefaultApiController creates a default api controller
-func NewDefaultApiController(s DefaultApiServicer) Router {
-	return &DefaultApiController{service: s}
+func NewDefaultApiController(s DefaultApiServicer, opts ...DefaultApiOption) Router {
+	controller := &DefaultApiController{
+		service:      s,
+		errorHandler: DefaultErrorHandler,
+	}
+
+	for _, opt := range opts {
+		opt(controller)
+	}
+
+	return controller
 }
 
 // Routes returns all of the api route for the DefaultApiController
@@ -55,7 +75,7 @@ func (c *DefaultApiController) BoardListGet(w http.ResponseWriter, r *http.Reque
 	result, err := c.service.BoardListGet(r.Context())
 	// If an error occurred, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		c.errorHandler(w, r, err, &result)
 		return
 	}
 	// If no error, encode the body and the result code
@@ -73,7 +93,7 @@ func (c *DefaultApiController) ServerIdBoardIdThreadListGet(w http.ResponseWrite
 	result, err := c.service.ServerIdBoardIdThreadListGet(r.Context(), serverId, boardId)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		c.errorHandler(w, r, err, &result)
 		return
 	}
 	// If no error, encode the body and the result code
@@ -93,7 +113,7 @@ func (c *DefaultApiController) ServerIdBoardIdThreadThreadIdGet(w http.ResponseW
 	result, err := c.service.ServerIdBoardIdThreadThreadIdGet(r.Context(), serverId, boardId, threadId)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		c.errorHandler(w, r, err, &result)
 		return
 	}
 	// If no error, encode the body and the result code

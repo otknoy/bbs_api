@@ -12,3 +12,34 @@ package openapi
 type ThreadResponse struct {
 	CommentList []Comment `json:"comment_list"`
 }
+
+// AssertThreadResponseRequired checks if the required fields are not zero-ed
+func AssertThreadResponseRequired(obj ThreadResponse) error {
+	elements := map[string]interface{}{
+		"comment_list": obj.CommentList,
+	}
+	for name, el := range elements {
+		if isZero := IsZeroValue(el); isZero {
+			return &RequiredError{Field: name}
+		}
+	}
+
+	for _, el := range obj.CommentList {
+		if err := AssertCommentRequired(el); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// AssertRecurseThreadResponseRequired recursively checks if required fields are not zero-ed in a nested slice.
+// Accepts only nested slice of ThreadResponse (e.g. [][]ThreadResponse), otherwise ErrTypeAssertionError is thrown.
+func AssertRecurseThreadResponseRequired(objSlice interface{}) error {
+	return AssertRecurseInterfaceRequired(objSlice, func(obj interface{}) error {
+		aThreadResponse, ok := obj.(ThreadResponse)
+		if !ok {
+			return ErrTypeAssertionError
+		}
+		return AssertThreadResponseRequired(aThreadResponse)
+	})
+}
