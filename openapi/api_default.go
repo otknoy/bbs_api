@@ -86,11 +86,11 @@ func (c *DefaultApiController) BoardListGet(w http.ResponseWriter, r *http.Reque
 // ServerIdBoardIdThreadListGet -
 func (c *DefaultApiController) ServerIdBoardIdThreadListGet(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	serverId := params["server_id"]
+	serverIdParam := params["server_id"]
 
-	boardId := params["board_id"]
+	boardIdParam := params["board_id"]
 
-	result, err := c.service.ServerIdBoardIdThreadListGet(r.Context(), serverId, boardId)
+	result, err := c.service.ServerIdBoardIdThreadListGet(r.Context(), serverIdParam, boardIdParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)
@@ -104,13 +104,13 @@ func (c *DefaultApiController) ServerIdBoardIdThreadListGet(w http.ResponseWrite
 // ServerIdBoardIdThreadThreadIdGet -
 func (c *DefaultApiController) ServerIdBoardIdThreadThreadIdGet(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	serverId := params["server_id"]
+	serverIdParam := params["server_id"]
 
-	boardId := params["board_id"]
+	boardIdParam := params["board_id"]
 
-	threadId := params["thread_id"]
+	threadIdParam := params["thread_id"]
 
-	result, err := c.service.ServerIdBoardIdThreadThreadIdGet(r.Context(), serverId, boardId, threadId)
+	result, err := c.service.ServerIdBoardIdThreadThreadIdGet(r.Context(), serverIdParam, boardIdParam, threadIdParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)
